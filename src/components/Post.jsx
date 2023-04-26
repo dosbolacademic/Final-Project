@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import supabase from "../supabaseClient";
 import Navbar from "./Navbar";
+import './Post.css'
 
 function Post() {
   const { id } = useParams();
@@ -9,7 +10,8 @@ function Post() {
   const [post, setPost] = useState(null);
   const [comment, setComment] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [updatedPost, setUpdatedPost] = useState({ title: "", content: "", image: "", comments: "" });
+  const [updatedPost, setUpdatedPost] = useState({ title: "", content: "", image: "" });
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -21,13 +23,14 @@ function Post() {
       if (error) {
         console.error("Error fetching post: ", error);
       } else {
-        setPost({ ...data, comments: data.comments || [] });
+        setPost(data);
         setUpdatedPost({ title: data.title, content: data.content, image: data.image });
+        setComments(data.comments || []);
       }
     };
   
     fetchPost();
-  }, [id]);  
+  }, [id]); 
 
   const upvotePost = async () => {
     if (!post) return;
@@ -57,7 +60,7 @@ function Post() {
   const addComment = async () => {
     if (!post || !comment) return;
   
-    const updatedComments = [...post.comments, comment];
+    const updatedComments = [...comments, comment];
     const { data, error } = await supabase
       .from("posts")
       .update({ comments: updatedComments })
@@ -66,9 +69,10 @@ function Post() {
       console.error("Error adding comment:", error);
     } else {
       setPost({ ...post, comments: updatedComments });
+      setComments(updatedComments);
       setComment("");
     }
-  };  
+  };
 
   const toggleEditMode = () => {
     setIsEditing(!isEditing);
@@ -98,12 +102,12 @@ function Post() {
               <input
                 value={updatedPost.title}
                 onChange={(e) => setUpdatedPost({ ...updatedPost, title: e.target.value })}
-                placeholder="Title"
+                placeholder="Topic"
               />
               <input
                 value={updatedPost.content}
                 onChange={(e) => setUpdatedPost({ ...updatedPost, content: e.target.value })}
-                placeholder="Content"
+                placeholder="Information"
               />
               <input
                 value={updatedPost.image}
@@ -127,7 +131,7 @@ function Post() {
           <input className="comment"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Add a comment"
+            placeholder="Leave a comment"
           />
           <button onClick={addComment}>Add Comment</button>
           {post.comments && post.comments.map((comment, index) => (

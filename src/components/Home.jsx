@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import supabase from "../supabaseClient";
 import Navbar from "./Navbar";
+import "./Home.css"
 
 function Home() {
   const [posts, setPosts] = useState([]);
@@ -38,11 +39,11 @@ function Home() {
         <input className="search"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search by title"
+          placeholder="Find content based on the Title"
         />
         <div className="sorting">
-        <button onClick={() => setSortBy("created_at")}>Sort by Date</button>
-        <button onClick={() => setSortBy("upvotes")}>Sort by Upvotes</button>
+        <button onClick={() => setSortBy("created_at")}>Arrange by Chronological Order</button>
+        <button onClick={() => setSortBy("upvotes")}>Arrange by popularity</button>
         </div>
 
         {posts

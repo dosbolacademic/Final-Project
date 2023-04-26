@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import supabase from "../supabaseClient";
 import Navbar from "./Navbar";
 
+import './AddPost.css'
 function AddPost() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -43,7 +44,7 @@ function AddPost() {
           onChange={(e) => setImage(e.target.value)}
           placeholder="Image URL"
         />
-        <button onClick={createPost}>Create Post</button>
+        <button onClick={createPost}>Write a Post</button>
       </div>
     </div>
   );
